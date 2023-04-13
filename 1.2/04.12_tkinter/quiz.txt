@@ -1,0 +1,25 @@
+q:Какой язык программирования является интерпретируемым?
+1. C++
++2. Python
+3. Java
+4. Ruby
+q:Какой язык программирования широко используется для разработки мобильных приложений?
++1. Swift
+2. C#
+3. Go
+4. JavaScript
+q:Какой из перечисленных языков программирования не является объектно-ориентированным?
+1. Ruby
+2. C++
+3. Python
++4. Fortran
+q:Что означает аббревиатура HTML?
++1. HyperText Markup Language
+2. Home Tool Markup Language
+3. Hyperlink Text Markup Language
+4. Hyper Terminal Markup Language
+q:Какая функция используется для вывода текста на экран в Python?
+1. input()
++2. print()
+3. read()
+4. display()
