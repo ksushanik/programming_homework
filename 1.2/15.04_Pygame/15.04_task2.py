@@ -35,13 +35,13 @@ while True:
                 pygame.quit()
                 exit()
             elif event.key == pygame.K_w or event.key == pygame.K_UP:
-                y -= speed
+                y = max(y - speed, 0)
             elif event.key == pygame.K_a or event.key == pygame.K_LEFT:
-                x -= speed
+                x = max(x - speed, 0)
             elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
-                y += speed
+                y = min(y + speed, screen.get_height() - height)
             elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
-                x += speed
+                x = min(x + speed, screen.get_width() - width)
             elif event.key == pygame.K_c:
                 # Смена цвета квадрата по нажатию клавиши "c"
                 color_index = (color_index + 1) % len(colors)
