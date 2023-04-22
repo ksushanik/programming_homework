@@ -1,7 +1,7 @@
-import pygame
 import os
 
-# Инициализация Pygame
+import pygame
+
 pygame.init()
 
 # Окно игры
@@ -12,99 +12,104 @@ pygame.display.set_caption("Mario Animation")
 
 # Загрузка спрайтов
 sprite_folder = "animations"
-sprite_left = [pygame.image.load(os.path.join(sprite_folder, f"l{i}.png")).convert_alpha() for i in range(1, 6)]
-sprite_right = [pygame.image.load(os.path.join(sprite_folder, f"r{i}.png")).convert_alpha() for i in range(1, 6)]
-sprite_standing = [pygame.image.load(os.path.join(sprite_folder, "0.png")).convert_alpha()]
+sprite_left = [pygame.image.load(os.path.join(sprite_folder, f"l{i}.png")).convert_alpha()
+               for i in range(1, 6)]
+sprite_right = [pygame.image.load(os.path.join(sprite_folder, f"r{i}.png")).convert_alpha()
+                for i in range(1, 6)]
+sprite_standing = pygame.image.load(os.path.join(sprite_folder, "0.png")).convert_alpha()
 
-# Состояние персонажа
-state_standing = "standing"
-state_left = "left"
-state_right = "right"
+# Переменные
+x = 50
+y = 425
+width = 20
+height = 71
+vel = 5
 
-# Состояние анимации
-animation_state = state_standing
-animation_frames = sprite_standing
-animation_frame_index = 0
-animation_tick = 0
-animation_speed = 10
+is_jump = False
+jump_count = 10
 
-# Координаты Марио
-x = screen_width // 2
-y = screen_height // 2
+left = False
+right = False
+walk_count = 0
 
-# Скорость движения Марио
-speed = 0.05
-x_change = 0
-y_change = 0
-is_falling = False
+# создадим объект clock для управления частотой кадров игры
+clock = pygame.time.Clock()
 
-# Дорога
-road_width = 400
-road_height = 50
-road_color = (100, 100, 100)
-road_x = screen_width // 2 - road_width // 2
-road_y = screen_height - road_height
 
-# Цикл игры
-running = True
-while running:
-    # Обработка событий
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                animation_state = state_left
-                animation_frames = sprite_left
-                animation_frame_index = 0
-                x_change = -speed  # изменение координаты x при нажатии на клавишу "влево"
-            elif event.key == pygame.K_RIGHT:
-                animation_state = state_right
-                animation_frames = sprite_right
-                animation_frame_index = 0
-                x_change = speed  # изменение координаты x при нажатии на клавишу "вправо"
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                x_change = 0
-                animation_state = state_standing
-                animation_frames = sprite_standing
-                animation_frame_index = 0
+def redraw_game_window():
+    global walk_count
 
-    # Проверка на выход Марио за границы дороги
-    if x < road_x or x > road_x + road_width:
-        is_falling = True
+    # Фон голубого цвета
+    screen.fill((0, 191, 255))
 
-    # Падение Марио
-    if is_falling:
-        y_change += 0.1
-        y += y_change
+    # Рисуем Марио на экране
+    if walk_count + 1 >= 15:
+        walk_count = 0
 
-        if y > screen_height:
-            running = False
+    if left:
+        screen.blit(sprite_left[walk_count // 3], (x, y))
+        walk_count += 1
+    elif right:
+        screen.blit(sprite_right[walk_count // 3], (x, y))
+        walk_count += 1
     else:
-        # Изменение координат Марио
-        x += x_change
-
-    # Очистка экрана
-    screen.fill((0, 0, 0))
-
-    # Отображение дороги
-    pygame.draw.rect(screen, road_color, (road_x, road_y, road_width, road_height))
-
-    # Отображение кадра анимации
-    current_frame = animation_frames[animation_frame_index]
-    screen.blit(current_frame, (x - current_frame.get_width() / 2, road_y - current_frame.get_height()))
-
-    # Обновление состояния анимации
-    animation_tick += 1
-    if animation_tick >= animation_speed:
-        animation_frame_index += 1
-        if animation_frame_index >= len(animation_frames):
-            animation_frame_index = 0
-        animation_tick = 0
+        screen.blit(sprite_standing, (x, y))
 
     # Обновление экрана
     pygame.display.flip()
 
-# Завершение Pygame
+
+# Цикл игры
+run = True
+while run:
+    # Устанавливаем частоту обновления кадров
+    clock.tick(27)
+
+    # Проверка состояния
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+
+    # Перемещение Марио влево или вправо при нажатой клавише
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT] and x > vel:
+        x -= vel
+        left = True
+        right = False
+    elif keys[pygame.K_RIGHT] and x < screen_width - width - vel:
+        x += vel
+        left = False
+        right = True
+    else:
+        left = False
+        right = False
+        walk_count = 0
+
+    # Прыжок Марио с помощью пробела, при условии, что он уже не в прыжке
+    if not is_jump:
+        if keys[pygame.K_SPACE]:
+            is_jump = True
+            left = False
+            right = False
+            walk_count = 0
+
+    else:
+        if jump_count >= -10:
+            neg = 1
+
+            if jump_count < 0:
+                neg = -1
+
+            y -= (jump_count ** 2) * 0.5 * neg
+
+            jump_count -= 1
+
+        else:
+            is_jump = False
+
+            jump_count = 10
+
+    # Перерисовать игровое окно с обновленными позициями Марио
+    redraw_game_window()
+
 pygame.quit()
