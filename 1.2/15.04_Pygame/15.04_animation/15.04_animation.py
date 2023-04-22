@@ -20,7 +20,7 @@ sprite_standing = pygame.image.load(os.path.join(sprite_folder, "0.png")).conver
 
 # Переменные
 x = 50
-y = 425
+y = 410
 width = 20
 height = 71
 vel = 5
@@ -32,7 +32,7 @@ left = False
 right = False
 walk_count = 0
 
-# создадим объект clock для управления частотой кадров игры
+# Создаем объект clock для управления частотой кадров игры
 clock = pygame.time.Clock()
 
 
@@ -55,7 +55,10 @@ def redraw_game_window():
     else:
         screen.blit(sprite_standing, (x, y))
 
-    # Обновление экрана
+    # Рисуем дорогу
+    road = pygame.draw.rect(screen, (128, 128, 128), (0, 443, screen_width, screen_height))
+
+    # Обновляем экран
     pygame.display.flip()
 
 
@@ -65,12 +68,12 @@ while run:
     # Устанавливаем частоту обновления кадров
     clock.tick(27)
 
-    # Проверка состояния
+    # Проверяем состояние
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
 
-    # Перемещение Марио влево или вправо при нажатой клавише
+    # Перемещаем Марио влево или вправо при нажатой клавише
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT] and x > vel:
         x -= vel
@@ -109,7 +112,7 @@ while run:
 
             jump_count = 10
 
-    # Перерисовать игровое окно с обновленными позициями Марио
+    # Перерисовываем игровое окно с обновленными позициями Марио
     redraw_game_window()
 
 pygame.quit()
