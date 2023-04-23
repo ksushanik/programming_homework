@@ -56,7 +56,7 @@ def redraw_game_window():
         screen.blit(sprite_standing, (x, y))
 
     # Рисуем дорогу
-    road = pygame.draw.rect(screen, (128, 128, 128), (0, 443, screen_width, screen_height))
+    pygame.draw.rect(screen, (128, 128, 128), (0, 443, screen_width, screen_height))
 
     # Обновляем экран
     pygame.display.flip()
